@@ -1,6 +1,9 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {signUp} from "./api"
+import { Input } from "./components/Input";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "../../shared/components/LanguageSelector";
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
 //Fonksiyonel ve class componentlerin özellikleri vardo ama artık.
@@ -17,22 +20,58 @@ export function SignUp() {
   const [passwordRepeat, setPasswordRepeat] = useState();
   const [successMessage,setSuccessMessage] = useState();
   const [errors,SetErrors] = useState({});
+  const [generalError,setGeneralError] = useState();
+  const { t } = useTranslation();
   
   const [apiProgress,setApiProgress] = useState(false); //Buton submit anında disable olması gerekir,çünkü kullanıcı
                                                         //istemeden de olsa butona sürekli basabilir ve sürekli istek gönderilir.
 
 
-  //Parametre olarak bir fonksiyon alır,ikinci bir parametre daha alıyor orda da şartlı alıyor ve bir arraydir.
+  //UseEffect : Parametre olarak bir fonksiyon alır,ikinci bir parametre daha alıyor orda da şartlı alıyor ve bir arraydir.
   //Ne gibi parametre bağlı olarak,hangi değerlerin değişimlerine bağlı olabilir ikinci parametre
   //Şuandaki kullanmamızın sebebi username'de eğer bir değer yazarsak hatayı ortadan kaldırmak için.
   //Boş olduğu zaman bir uyarı varken,yazdıktan sonra ise hata mesajı gitmesi için.
+
+  
   useEffect(() =>{
-    SetErrors({})
-  },[username] )
+    SetErrors(function(lastErrors){
+      return {
+        ...lastErrors,
+        username: undefined
+      }
+    });               //username ya da diğer değerler için state değerlerini güncellerken callback fonksiyonu
+        //güncellemek tercih edilmeli,parçalı olarak tabiki.Aksi takdirde beklenmektedik davranış,öngöremediğimiz davranışlar
+        //olabilir.SetError güncelleme fonksiyonları asenkron çalışıyor,react optimize etmeye çalışıyor.
+        //Güncellemeye çalıştığınız errors oobjesinin tam olarak en sonki değerini sahip olup olmadığınızı bilemeyebilirsiniz
+        //Bu tip senaryoları çözmek için callback fonksiyonunu parametre olarak verebiliriz.Obje üzerinde(lastError) değiştirmeden
+        //onun bir kopyasını oluşturup spread ile onun içerisine değiştirmek istediğiniz kısımları(username) ekleyebilirsiniz.
+        //İstediğiniz formdaki objeyi en nihai hale getirip dönebilirsiniz.Ve bu dönülen değerde errorsa setlenmiş olacak.
+        //Bu şekilde username etkileşimi ile birlikte hata mesajlarınıda kaldırabiliriz.
+   }, [username] )
+
+
+   useEffect(() =>{
+    SetErrors(function(lastErrors){
+      return{
+        ...lastErrors,
+        email : undefined,
+      }
+    });
+   },[email])
+
+   useEffect(() =>{
+    SetErrors(function(lastErrors){
+      return{
+        ...lastErrors,
+        password : undefined,
+      }
+    });
+   },[password])
 
   const onSubmit = async (event) => { //Form submit edildiğini anda true olur setApiProgress(true)
     event.preventDefault();
     setSuccessMessage();
+    setGeneralError();
     setApiProgress(true);
    
     try {
@@ -42,91 +81,71 @@ export function SignUp() {
         password,
       });
       setSuccessMessage(response.data.message);
-    }catch(axiosError){
-      if(axiosError.response?.data && axiosError.response.data.status === 400)
+    } catch (axiosError) {
+      if (axiosError.response?.data && axiosError.response.data.status === 400) {
+        SetErrors(axiosError.response.data.validationError);
+      } 
+      else
       {
-      SetErrors(axiosError.response.data.validationErrors);
+        setGeneralError(t('genericError'))
       }
-    }finally{
+    } finally {
       setApiProgress(false);
     }
+  };
     // .then((response) => {
     //   
     // }).finally(() => setApiProgress(false))   //cevap aldıktan sonra spinner(logo olarak dönüyor diyebiliriz.) durması..
-  };
+  
   //Dışardan erişmek için export edilir
   //jsx'de sadece 1 parent element dönebiliriz.
-  //11.satırdaki username ile 12.satırdaki username ilişkili oldu ve labela tıklandığı zaman input çalıştı.
   //Ayrı satırlar için div kullanabiliriz
   //type ile password'u maskeledik.
   //OnChange ile console'dan değişen eventleri loglama ile bakabiliriz.
+
+  const passwordRepeatError = useMemo(()=> {; //Daha önce bir değişiklik yok ise hesaplanmış halini döner.
+  //Böylece inputlarda bir değişiklik yoksa outputlarda da yoktur.
+  if(password && password != passwordRepeat){
+   return  t('passwordMismatch')
+  }
+  return '';
+  },[password,passwordRepeat]);
+
+
   return (
     <div className="container">
       <div className="col-lg-6 offset-lg-3 col-sm-8 offset-sm-2 ">
-      <form className="card" onSubmit={onSubmit}>
-        <div className="text-center card-header">
-          <h1>SignUp</h1>
-        </div>
-        <div className="card-body">
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            id="username"
-            className={
-              errors.username ? "form-control is-invalid" :
-            "form-control" }
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <div className="invalid-feedback">
-            {errors.username}
+        <form className="card" onSubmit={onSubmit}>
+          <div className="text-center card-header">
+            <h1>{t('signUp')}</h1>
           </div>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            id="email"
-            className="form-control"
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            id="password"
-            className="form-control"
-            type="password"
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="passwordRepeat">Password Repeat</label>
-          <input
-            id="passwordRepeat"
-            className="form-control"
-            type="password"
-            onChange={(event) => setPasswordRepeat(event.target.value)}
-          />
-        </div>
-        {successMessage && <div className="alert alert-success" >{successMessage}</div>}
-
-        <div className="text-center">
-          <button
-            className="btn btn-primary"
-            disabled={ apiProgress || (!password || password !== passwordRepeat)}>
-              {apiProgress &&  <span className="spinner-border spinner-border-sm" aria-hidden ="true"></span>}
-            Sign Up
-          </button>
-        </div>
-        </div>
-      </form>
+          <div className="card-body">
+            <Input id="username" label={t('username')} error = {errors.username} 
+            onChange = {(event) => setUsername(event.target.value)} />
+            <Input id = "email" label = {t('email')} error = {errors.email}
+            onChange = {(event) => setEmail(event.target.value)}/>
+            <Input id = "password" label = {t('password')} error = {errors.password}
+            onChange = {(event) => setPassword(event.target.value) } type ="password" />
+             <Input id = "passwordRepeat" label = {t('passwordRepeat')} error = {passwordRepeatError}
+            onChange = {(event) => setPasswordRepeat(event.target.value) } type ="password" />
+         
+            {successMessage && (<div className="alert alert-success">{successMessage}</div>)}
+            {generalError && (<div className="alert alert-danger">{generalError}</div>)}
+            <div className="text-center">
+              <button
+                className="btn btn-primary"
+                disabled={apiProgress || (!password || password !== passwordRepeat)}
+              >
+                {apiProgress && <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>}
+                {t('signUp')}
+              </button>
+            </div>
+          </div>
+        </form>
+        <LanguageSelector/>
       </div>
     </div>
   );
 }
+
 
