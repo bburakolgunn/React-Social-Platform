@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import {signUp} from "./api"
 import { Input } from "./components/Input";
 import { useTranslation } from "react-i18next";
-import { LanguageSelector } from "../../shared/components/LanguageSelector";
+
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
 //Fonksiyonel ve class componentlerin özellikleri vardo ama artık.
@@ -150,7 +150,7 @@ export function SignUp() {
             </div>
           </div>
         </form>
-        <LanguageSelector/>
+        
       </div>
     </div>
   );
