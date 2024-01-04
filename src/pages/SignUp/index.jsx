@@ -82,8 +82,16 @@ export function SignUp() {
       });
       setSuccessMessage(response.data.message);
     } catch (axiosError) {
-      if (axiosError.response?.data && axiosError.response.data.status === 400) {
-        SetErrors(axiosError.response.data.validationError);
+
+      //Backend'e gelen bir hata mesajı içerisinde data body varsa eğer 400 cevabı aldıysak validatonError'u
+      //set ediyoruz aksi takdirde gelen response body'deki messagı general error olarak set ediyoruz.
+      if (axiosError.response?.data) {
+        if (axiosError.response.data.status === 400) {
+          SetErrors(axiosError.response.data.validationError);
+        } else {
+          setGeneralError(axiosError.response.data.message)
+        }
+        
       } 
       else
       {
