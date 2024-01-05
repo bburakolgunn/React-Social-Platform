@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {signUp} from "./api"
 import { Input } from "./components/Input";
 import { useTranslation } from "react-i18next";
+import { Alert } from "../../shared/components/Alert";
+import { Spinner } from "../../shared/components/Spinner";
 
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
@@ -23,7 +25,7 @@ export function SignUp() {
   const [generalError,setGeneralError] = useState();
   const { t } = useTranslation();
   
-  const [apiProgress,setApiProgress] = useState(false); //Buton submit anında disable olması gerekir,çünkü kullanıcı
+  const [apiProgress,setApiProgress] = useState(true); //Buton submit anında disable olması gerekir,çünkü kullanıcı
                                                         //istemeden de olsa butona sürekli basabilir ve sürekli istek gönderilir.
 
 
@@ -137,14 +139,14 @@ export function SignUp() {
              <Input id = "passwordRepeat" label = {t('passwordRepeat')} error = {passwordRepeatError}
             onChange = {(event) => setPasswordRepeat(event.target.value) } type ="password" />
          
-            {successMessage && (<div className="alert alert-success">{successMessage}</div>)}
-            {generalError && (<div className="alert alert-danger">{generalError}</div>)}
+            {successMessage && (<Alert>{successMessage}</Alert>)}
+            {generalError && (<Alert styleType = "danger">{generalError}</Alert>)}
             <div className="text-center">
               <button
                 className="btn btn-primary"
                 disabled={apiProgress || (!password || password !== passwordRepeat)}
               >
-                {apiProgress && <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>}
+                {apiProgress && <Spinner sm = {true}/>}
                 {t('signUp')}
               </button>
             </div>
