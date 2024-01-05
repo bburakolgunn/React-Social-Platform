@@ -1,9 +1,10 @@
 {
-  "signUp": "Kayıt ol",
+  "signUp": "Kayit ol",
   "username": "Kullanici Adi",
   "email": "E-posta",
   "password": "Sifre",
   "passwordRepeat": "Sifre Tekrari",
   "passwordMismatch": "Parolaniz eslesmiyor.",
-  "genericError": "Beklenmedik hata.Lütfen tekrar deneyiniz."
+  "genericError": "Beklenmedik hata.Lütfen tekrar deneyiniz.",
+  "userNotFoundError" : "Kullannici bulunamadi"
 }

@@ -3,28 +3,12 @@ import { useParams } from "react-router-dom";
 import { activateUser } from "./api";
 import { Alert } from "../../shared/components/Alert";
 import { Spinner } from "../../shared/components/Spinner";
+import { useRouteParamApiRequest } from "../../shared/hooks/useRouteParamApiRequest";
 
 export function Activation() {
-  const { token } = useParams();
-  const [apiProgress, setApiProgress] = useState(true);
-  const [successMessage, setSuccessMesage] = useState();
-  const [errorMessage, setErrorMessage] = useState();
-
-  useEffect(() => {
-    async function activate() {
-      try {
-        const response = await activateUser(token);
-        setSuccessMesage(response.data.message);
-      } catch (axiosError) {
-        setErrorMessage(
-          axiosError.response?.data?.message || "An unknown error occurred"
-        );
-      } finally {
-        setApiProgress(false);
-      }
-    }
-    activate();
-  }, []);
+ 
+ const {apiProgress,data,error} = useRouteParamApiRequest('token', activateUser) //ilk parametremiz routing token,api request activateUser
+ 
 
   return (
     <>
@@ -34,8 +18,8 @@ export function Activation() {
           <Spinner />
         </Alert>
       )}
-      {successMessage && <Alert>{successMessage}</Alert>}
-      {errorMessage && <Alert styleType="primary">{errorMessage}</Alert>}
+      {data?.message && <Alert>{data.message}</Alert>}
+      {error && <Alert styleType="primary">{error}</Alert>}
     </>
   );
 }
