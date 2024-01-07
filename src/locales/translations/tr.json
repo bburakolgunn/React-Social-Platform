@@ -6,5 +6,7 @@
   "passwordRepeat": "Sifre Tekrari",
   "passwordMismatch": "Parolaniz eslesmiyor.",
   "genericError": "Beklenmedik hata.Lütfen tekrar deneyiniz.",
-  "userNotFoundError" : "Kullannici bulunamadi"
+  "userNotFoundError" : "Kullannici bulunamadi",
+  "login" : "Giris Yap"
+
 }

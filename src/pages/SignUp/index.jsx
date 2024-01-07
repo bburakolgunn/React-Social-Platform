@@ -1,10 +1,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {signUp} from "./api"
-import { Input } from "./components/Input";
+import { Input } from "../../shared/components/Input";
 import { useTranslation } from "react-i18next";
 import { Alert } from "../../shared/components/Alert";
 import { Spinner } from "../../shared/components/Spinner";
+import { Button } from "../../shared/components/Button";
 
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
@@ -142,13 +143,12 @@ export function SignUp() {
             {successMessage && (<Alert>{successMessage}</Alert>)}
             {generalError && (<Alert styleType = "danger">{generalError}</Alert>)}
             <div className="text-center">
-              <button
-                className="btn btn-primary"
-                disabled={apiProgress || (!password || password !== passwordRepeat)}
+              <Button
+
+              apiProgress={apiProgress}
               >
-                {apiProgress && <Spinner sm = {true}/>}
-                {t('signUp')}
-              </button>
+              {t('signUp')}
+              </Button>
             </div>
           </div>
         </form>
