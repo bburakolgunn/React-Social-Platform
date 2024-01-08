@@ -31,7 +31,6 @@ function App() {
     <AuthenticationContext>
       <NavBar/>
       <div className="container mt-3">
-        {/* <Login onLoginSuccess={onLoginSuccess} /> */}
         <Outlet/>  
         <LanguageSelector />
       </div>

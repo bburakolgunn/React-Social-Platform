@@ -2,16 +2,18 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import logo from "../../assets/Kangal.png";
 import { useContext } from "react";
-import { AuthContext } from "../state/context";
+import { AuthContext, useAuthDispatch, useAuthState } from "../state/context";
+import { ProfileImage } from "./ProfileImage";
 
 //Sayfalar arası geçiş
 export function NavBar() {
   const { t } = useTranslation();
-  const authState = useContext(AuthContext)
+  const authState = useAuthState();
+  const dispatch = useAuthDispatch();
 
   const onClickLogout = () => {
-    authState.onLogoutSuccess();
-  }
+    dispatch({ type: "logout-success" });
+  };
 
   return (
     <nav className="navbar navbar-expand bg-body-tertiary shadow-sm">
@@ -37,20 +39,22 @@ export function NavBar() {
           )}
           {authState.id > 0 && (
             <>
-             <li className="nav-item">
-              <Link className="nav-link" to={`/user/${authState.id}`}>
-                My Profile
-              </Link>
-            </li>
-            <li className="nav-item">
-                <span className="nav-link" role="button" onClick={onClickLogout}>
-                   Logout
+              <li className="nav-item">
+                <Link className="nav-link" to={`/user/${authState.id}`}>
+                  <ProfileImage width={30} />
+                  <span className="ms-2">{authState.username}</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <span
+                  className="nav-link"
+                  role="button"
+                  onClick={onClickLogout}
+                >
+                  Logout
                 </span>
-               
-              
-            </li>
+              </li>
             </>
-           
           )}
         </ul>
       </div>

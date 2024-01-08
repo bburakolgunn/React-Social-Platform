@@ -6,18 +6,14 @@ import { Spinner } from "../../shared/components/Spinner";
 import { Input } from "../../shared/components/Input";
 import { Button } from "../../shared/components/Button";
 import { login } from "./api";
-import { AuthContext } from "../../shared/state/context";
+import { AuthContext, useAuthDispatch } from "../../shared/state/context";
 import { useNavigate } from "react-router-dom";
-
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
 //Fonksiyonel ve class componentlerin özellikleri vardo ama artık.
 //React'in 16.8 versiyonu ile bu fark ortadan kalktı
 
 export function Login({}) {
-  const authState = useContext(AuthContext);
-
-
   //UseState:Bir değeri,tutabilmemiz ve o değerdeki değişimlere componentlerin reaksiyon göstermesi diyebiliriz.
   //UseState bizlere bir array döndürür,
   //UseState React built-in hooklarından biridir.
@@ -27,7 +23,8 @@ export function Login({}) {
   const [errors, SetErrors] = useState({});
   const [generalError, setGeneralError] = useState();
   const { t } = useTranslation();
-  const navigate =  useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useAuthDispatch();
 
   const [apiProgress, setApiProgress] = useState(true); //Buton submit anında disable olması gerekir,çünkü kullanıcı
   //istemeden de olsa butona sürekli basabilir ve sürekli istek gönderilir.
@@ -62,25 +59,21 @@ export function Login({}) {
     setApiProgress(true);
 
     try {
-
-      const response = await login({ email,password})
-      authState.onLoginSuccess(response.data.user)
-      navigate("/")
-     
+      const response = await login({ email, password });
+      dispatch({ type: "login-success", data: response.data });
+      navigate("/");
     } catch (axiosError) {
       //Backend'e gelen bir hata mesajı içerisinde data body varsa eğer 400 cevabı aldıysak validatonError'u
       //set ediyoruz aksi takdirde gelen response body'deki messagı general error olarak set ediyoruz.
-         if (axiosError.response?.data) {
-           if (axiosError.response.data.status === 400) {
-           SetErrors(axiosError.response.data.validationError);
-         } else {
-             setGeneralError(axiosError.response.data.message)
-           }
-         }
-         else
-         {
-           setGeneralError(t('genericError'))
-         }
+      if (axiosError.response?.data) {
+        if (axiosError.response.data.status === 400) {
+          SetErrors(axiosError.response.data.validationError);
+        } else {
+          setGeneralError(axiosError.response.data.message);
+        }
+      } else {
+        setGeneralError(t("genericError"));
+      }
     } finally {
       setApiProgress(false);
     }
@@ -119,12 +112,7 @@ export function Login({}) {
 
             {generalError && <Alert styleType="danger">{generalError}</Alert>}
             <div className="text-center">
-            <Button
-              apiProgress={apiProgress}
-            >
-            {t("login")}
-            </Button>
-
+              <Button apiProgress={apiProgress}>{t("login")}</Button>
             </div>
           </div>
         </form>

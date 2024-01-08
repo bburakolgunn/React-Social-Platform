@@ -1,30 +1,59 @@
-import { createContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { loadAuthState, storeAuthState } from "./storage";
+import { setToken } from "../../lib/http";
 
 export const AuthContext = createContext();
 
-export function AuthenticationContext({ children }) {
-  const [auth, setAuth] = useState(loadAuthState());
+export const AuthDispatchContext = createContext();
 
-  const onLoginSuccess = (data) => {
-    setAuth(data);
-    storeAuthState(data);
-  };
+export function useAuthState() {
+  return useContext(AuthContext);
+}
 
-  const onLogoutSuccess = () =>{
-    setAuth({id:0})
-    storeAuthState({id:0})
+export function useAuthDispatch() {
+  return useContext(AuthDispatchContext);
+}
+
+const authReducer = (authState, action) => {
+  switch (action.type) {
+    case "login-success":
+      setToken(action.data.token)
+      return action.data.user;
+    case "logout-success":
+      setToken();
+      return { id: 0 };
+    case "user-update-success" :
+    return{
+      ...authState,
+      username : action.data.username
+    }
+    default:
+      throw new Error(`unknow action: ${action.type}`);
   }
+};
 
+export function AuthenticationContext({ children }) {
+  const [authState, dispatch] = useReducer(authReducer, loadAuthState());
+
+  useEffect(() => {
+    storeAuthState(authState);
+  }, [authState]);
+
+  //dispatch value olarak provider'a verilir.Böylece navbar'da ya da login de dispatch
+    //üzerinden istenilen aksiyonu üzerinden state güncellenir.
   return (
-    <AuthContext.Provider
-      value={{
-        ...auth,
-        onLoginSuccess,
-        onLogoutSuccess,
-      }}
-    >
-      {children}
+    <AuthContext.Provider value={authState}>
+      {" "}
+      
+      <AuthDispatchContext.Provider value={dispatch}>
+        {children}
+      </AuthDispatchContext.Provider>
     </AuthContext.Provider>
   );
 }

@@ -16,3 +16,25 @@ export function loadAuthState(){
     }
 
 }
+
+//Burada Authorization sekmesinde tokenlerin sayfa yenilenirken kaybolması sebebi ile yazıldı.
+export function storeToken(token){
+if(token){
+    localStorage.setItem('token',JSON.stringify(token))//token bir obje olduğu için String'e çevrildi.
+} else{
+    localStorage.removeItem('token') //Logout senaryosu
+}
+}
+
+//İnitialize anında  localstorage'den token getirilmesi
+export function loadToken(){
+     const  tokenInString = localStorage.getItem('token')
+     if(!tokenInString) return null;
+     try{
+        return JSON.parse(tokenInString);
+     }
+     catch{
+        return null;
+     }
+}
+
