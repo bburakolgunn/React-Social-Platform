@@ -7,7 +7,7 @@ import { Alert } from "../../../../shared/components/Alert";
 import { Button } from "../../../../shared/components/Button";
 import { Form } from "react-router-dom";
 
-export function UserEditForm({setEditMode}) {
+export function UserEditForm({setEditMode, setTempImage}) {
   const authState = useAuthState();
   const { t } = useTranslation();
   const [newUsername, setNewUsername] = useState(authState.username);
@@ -15,6 +15,7 @@ export function UserEditForm({setEditMode}) {
   const [errors, SetErrors] = useState({});
   const [generalError, setGeneralError] = useState();
   const dispatch = useAuthDispatch();
+  const [newImage,setNewImage] = useState();
 
   const onChangeUsername = (event) => {
     setNewUsername(event.target.value);
@@ -26,7 +27,25 @@ export function UserEditForm({setEditMode}) {
   const onClickCancel = () => {
     setEditMode(false);
     setNewUsername(authState.username);
+    setNewImage();
+    setTempImage();
   };
+
+  //Profil resim yükleme işlemi
+  const onSelectImage  = (event) => {
+    if(event.target.files< 1) return;
+    const file = event.target.files[0]
+    const fileReader = new FileReader();
+
+    fileReader.onloadend = () =>{
+      const data = fileReader.result //Seçilen dosyanın yada image'ın String olmuş hali
+      setNewImage(data);
+      setTempImage(data);
+    }
+
+
+    fileReader.readAsDataURL(file);
+  }
 
   const onSubmit = async (event) => {
     event.preventDefault(); //Submit eventleri tarayıcıda işlem çalıştığından onu event.prevendDefault ile durdurulmalı.
@@ -34,10 +53,10 @@ export function UserEditForm({setEditMode}) {
     SetErrors({});
     setGeneralError();
     try {
-      await updateUser(authState.id, { username: newUsername });
+       const { data } =  await updateUser(authState.id, { username: newUsername , image : newImage });
       dispatch({
         type: "user-update-success",
-        data: { username: newUsername },
+        data: { username: data.username , image : data.image },
       });
       setEditMode(false);
     } catch (axiosError) {
@@ -62,6 +81,11 @@ export function UserEditForm({setEditMode}) {
         defaultValue={authState.username}
         onChange={onChangeUsername}
         error={errors.username}
+      />
+      <Input
+      label = {t("ProfileImage")}
+      type = "file"
+      onChange = {onSelectImage}
       />
       {generalError && <Alert styleType="danger">{generalError}</Alert>}
       <Button apiProgress={apiProgress}  type="submit">

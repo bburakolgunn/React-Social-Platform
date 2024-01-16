@@ -7,6 +7,7 @@
   "passwordMismatch": "Parolaniz eslesmiyor.",
   "genericError": "Beklenmedik hata.Lütfen tekrar deneyiniz.",
   "userNotFoundError" : "Kullannici bulunamadi",
-  "login" : "Giris Yap"
+  "login" : "Giris Yap",
+  "ProfileImage" : "Profil Resmi"
 
 }

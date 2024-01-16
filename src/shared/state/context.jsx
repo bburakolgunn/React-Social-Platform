@@ -31,7 +31,8 @@ const authReducer = (authState, action) => {
     case "user-update-success" :
     return{
       ...authState,
-      username : action.data.username
+      username : action.data.username,
+      image : action.data.image
     }
     default:
       throw new Error(`unknow action: ${action.type}`);

@@ -14,6 +14,7 @@ import { UserEditForm } from "./UserEditForm";
 
     const authState = useAuthState();
     const [editMode, setEditMode] = useState(false); //Edit butonu başka in-aktif
+    const [tempImage,setTempImage] = useState();
  
     
 
@@ -27,7 +28,7 @@ import { UserEditForm } from "./UserEditForm";
     return (
       <div className="card">
         <div className="card-header">
-          <ProfileImage width={200}/>
+          <ProfileImage width={200} tempImage = {tempImage} image={user.image}/>
           
         </div>
         <div className="card-body text-center">
@@ -35,7 +36,7 @@ import { UserEditForm } from "./UserEditForm";
           {isEditButtonVisible && (
             <Button onClick={() => setEditMode(true)}>Edit</Button>
           )}
-          {editMode && <UserEditForm setEditMode={setEditMode}/>}
+          {editMode && <UserEditForm setEditMode={setEditMode} setTempImage = {setTempImage}/>}
         </div>
       </div>
     );
