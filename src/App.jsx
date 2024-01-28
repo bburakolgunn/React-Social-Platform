@@ -1,12 +1,9 @@
 import "./App.css";
 import { Link, Outlet } from "react-router-dom";
-
 import { LanguageSelector } from "./shared/components/LanguageSelector";
-import { useTranslation } from "react-i18next";
-import { NavBar } from "./shared/components/NavBar";
-import { Login } from "./pages/Login";
-import { useState } from "react";
+
 import { AuthenticationContext } from "./shared/state/context";
+import { NavBar } from "./shared/components/NavBar/Index";
 
 
 function App() {

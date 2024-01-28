@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import logo from "../../assets/Kangal.png";
-import { useContext } from "react";
-import { AuthContext, useAuthDispatch, useAuthState } from "../state/context";
-import { ProfileImage } from "./ProfileImage";
+import logo from "../../../assets/Kangal.png";
+import { useAuthDispatch, useAuthState } from "../../state/context";
+import { ProfileImage } from "../ProfileImage";
+import { logout } from "./api";
 
 //Sayfalar arası geçiş
 export function NavBar() {
@@ -11,8 +11,18 @@ export function NavBar() {
   const authState = useAuthState();
   const dispatch = useAuthDispatch();
 
-  const onClickLogout = () => {
-    dispatch({ type: "logout-success" });
+  const onClickLogout = async () => {
+    try
+    {
+      await logout();
+    }
+    catch
+    {
+
+    }finally{
+      dispatch({ type: "logout-success" });
+    }
+    
   };
 
   return (

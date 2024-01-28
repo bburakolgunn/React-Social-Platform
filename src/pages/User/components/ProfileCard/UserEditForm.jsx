@@ -19,7 +19,12 @@ export function UserEditForm({setEditMode, setTempImage}) {
 
   const onChangeUsername = (event) => {
     setNewUsername(event.target.value);
-    SetErrors({});
+      SetErrors(function(lastErrors){
+        return {
+          ...lastErrors,
+          username: undefined
+        }
+      });      
   };
 
   //Edit tuşuna basıp yazı yazıldıktan sonra cancel'a basıp daha sonra eski yazıyı save edildiğinde
@@ -33,6 +38,12 @@ export function UserEditForm({setEditMode, setTempImage}) {
 
   //Profil resim yükleme işlemi
   const onSelectImage  = (event) => {
+    SetErrors(function(lastErrors){
+      return {
+        ...lastErrors,
+        image: undefined
+      }
+    });  
     if(event.target.files< 1) return;
     const file = event.target.files[0]
     const fileReader = new FileReader();
@@ -86,6 +97,7 @@ export function UserEditForm({setEditMode, setTempImage}) {
       label = {t("ProfileImage")}
       type = "file"
       onChange = {onSelectImage}
+      error = {errors.image}
       />
       {generalError && <Alert styleType="danger">{generalError}</Alert>}
       <Button apiProgress={apiProgress}  type="submit">

@@ -42,7 +42,9 @@ export function SignUp() {
         ...lastErrors,
         username: undefined
       }
-    });               //username ya da diğer değerler için state değerlerini güncellerken callback fonksiyonu
+    });      
+  }, [username] )
+    //username ya da diğer değerler için state değerlerini güncellerken callback fonksiyonu
         //güncellemek tercih edilmeli,parçalı olarak tabiki.Aksi takdirde beklenmektedik davranış,öngöremediğimiz davranışlar
         //olabilir.SetError güncelleme fonksiyonları asenkron çalışıyor,react optimize etmeye çalışıyor.
         //Güncellemeye çalıştığınız errors oobjesinin tam olarak en sonki değerini sahip olup olmadığınızı bilemeyebilirsiniz
@@ -50,7 +52,7 @@ export function SignUp() {
         //onun bir kopyasını oluşturup spread ile onun içerisine değiştirmek istediğiniz kısımları(username) ekleyebilirsiniz.
         //İstediğiniz formdaki objeyi en nihai hale getirip dönebilirsiniz.Ve bu dönülen değerde errorsa setlenmiş olacak.
         //Bu şekilde username etkileşimi ile birlikte hata mesajlarınıda kaldırabiliriz.
-   }, [username] )
+   
 
 
    useEffect(() =>{
