@@ -4,6 +4,7 @@ import { Button } from "../../../../shared/components/Button";
 
 import { ProfileImage } from "../../../../shared/components/ProfileImage";
 import { UserEditForm } from "./UserEditForm";
+import { UserDeleteButton } from "./UserDeleteButton";
 
 
 
@@ -22,7 +23,7 @@ import { UserEditForm } from "./UserEditForm";
     //export function ProfileCard({ user }) username'den al. 
     const visibleUsername = authState.id === user.id ? authState.username : user.username;
 
-    const isEditButtonVisible = !editMode && authState.id === user.id;
+    const isLoggedInUser = !editMode && authState.id === user.id;
   
   
     return (
@@ -33,8 +34,13 @@ import { UserEditForm } from "./UserEditForm";
         </div>
         <div className="card-body text-center">
           {!editMode && <span className="fs-3 d-block">{visibleUsername}</span>}
-          {isEditButtonVisible && (
+          {isLoggedInUser && (
+            <>
             <Button onClick={() => setEditMode(true)}>Edit</Button>
+            <div className="d-inline m-1"></div>
+            <UserDeleteButton/>
+            </>
+            
           )}
           {editMode && <UserEditForm setEditMode={setEditMode} setTempImage = {setTempImage}/>}
         </div>

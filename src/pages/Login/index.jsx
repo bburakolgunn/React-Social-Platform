@@ -7,7 +7,7 @@ import { Input } from "../../shared/components/Input";
 import { Button } from "../../shared/components/Button";
 import { login } from "./api";
 import { AuthContext, useAuthDispatch } from "../../shared/state/context";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 //Reac'ta component oluştururken iki tane yöntem var. Fonksiyonel component ve class component var.
 //Fonksiyonel ve class componentlerin özellikleri vardo ama artık.
@@ -109,11 +109,13 @@ export function Login({}) {
               onChange={(event) => setPassword(event.target.value)}
               type="password"
             />
-
             {generalError && <Alert styleType="danger">{generalError}</Alert>}
             <div className="text-center">
               <Button apiProgress={apiProgress}>{t("login")}</Button>
             </div>
+          </div>
+          <div className="card-footer text-center">
+            <Link to = "/password-reset/request">Forget Password</Link>
           </div>
         </form>
       </div>
