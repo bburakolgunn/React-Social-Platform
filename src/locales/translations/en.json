@@ -8,5 +8,7 @@
   "genericError": "Unexpected  error occured.Please try again",
   "userNotFoundError" : "User not found",
   "login" : "Login",
-  "ProfileImage" : "Profile Image"
+  "ProfileImage" : "Profile Image",
+  "KangaliteInformation" : "There is no kangalite.",
+  "OldKangalite" : "Load old Kangalite"
 }

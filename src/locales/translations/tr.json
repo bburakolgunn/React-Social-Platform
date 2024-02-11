@@ -8,6 +8,7 @@
   "genericError": "Beklenmedik hata.Lütfen tekrar deneyiniz.",
   "userNotFoundError" : "Kullannici bulunamadi",
   "login" : "Giris Yap",
-  "ProfileImage" : "Profil Resmi"
-
+  "ProfileImage" : "Profil Resmi" ,
+  "KangaliteInformation" : "Şuan da kangalite bulunmamaktadır.",
+  "OldKangalite" : "Eski Kangalite'ları getir."
 }

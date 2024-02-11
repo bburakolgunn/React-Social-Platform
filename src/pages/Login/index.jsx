@@ -2,7 +2,6 @@ import { useContext, useEffect, useMemo, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 import { Alert } from "../../shared/components/Alert";
-import { Spinner } from "../../shared/components/Spinner";
 import { Input } from "../../shared/components/Input";
 import { Button } from "../../shared/components/Button";
 import { login } from "./api";
