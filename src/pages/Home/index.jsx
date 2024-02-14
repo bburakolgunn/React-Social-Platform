@@ -1,27 +1,27 @@
-import { useState } from "react";
 import {KangalSubmit} from "../../shared/components/KangalSubmit";
 import { UserList } from "./components/UserList";
-import { Login } from "../Login";
 import { useAuthState } from "../../shared/state/context";
 import {Kangalite} from "../../shared/components/Kangalite";
 
 export function Home (){
-    const { isLoggedIn } = useAuthState(action => ({isLoggedIn:action.isLoggedIn}));
-  return(
+  const authState = useAuthState();
+  const isLoggedInUser = !!authState.id; //Login olmayınca textarea gözükmesin.
+
+  return (
     <div className="container">
-        <div className="row">
+      <div className="row">
         <div className="col">
-            {( 
+          {isLoggedInUser && (
             <div className="mb-1">
-            <KangalSubmit/>
+              <KangalSubmit />
             </div>
-            )}
-            <Kangalite/>
-            </div>
+          )}
+          {isLoggedInUser && <Kangalite />}
+        </div>
         <div className="col">
-          <UserList/>  
+          <UserList />  
         </div>
-        </div>
+      </div>
     </div>
-    )
-};
+  );
+}
